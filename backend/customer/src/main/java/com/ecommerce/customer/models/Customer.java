@@ -1,8 +1,7 @@
 package com.ecommerce.customer.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -17,6 +16,9 @@ import static jakarta.persistence.GenerationType.AUTO;
         @UniqueConstraint(name = "customer_username_unique", columnNames = "username")
     }
 )
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
   @Id
   @GeneratedValue(strategy = AUTO)
