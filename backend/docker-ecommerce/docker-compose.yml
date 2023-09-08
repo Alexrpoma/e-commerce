@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  dataBase:
+    container_name: postgresql
+    image: postgres:15.4-alpine3.18
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adm_psql
+      POSTGRES_DB: customer
+      PGDATA: /data/postgres
+    ports:
+      - "8000:5432"
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+networks:
+  ecommerce-network:

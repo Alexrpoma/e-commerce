@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:8000/customer
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: adm_psql
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dll-auto: create-drop
+    hibernate:
+      format_sql: true
+    show-sql: true
+
+server:
+  port: 9000
