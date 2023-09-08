@@ -51,13 +51,13 @@ public record CustomerServicesImp(
     Customer customer = customerRepository.findById(uuid)
         .orElseThrow(() -> new NotFoundException("Customer %s not found!"
             .formatted(uuid)));
-    if(customerRepository.existCustomerByEmail(customer.getEmail())) {
-      log.error("Update customer: Email %s duplicated".formatted(customer.getEmail()));
+    if(customerRepository.existCustomerByEmail(updateCustomer.getEmail())) {
+      log.error("Update customer: Email %s duplicated".formatted(updateCustomer.getEmail()));
       throw new DuplicateDataException("Email %s has already been registered!"
           .formatted(customer.getEmail()));
     }
-    if(customerRepository.existCustomerByUsername(customer.getUsername())) {
-      log.error("Insert customer: Username %s duplicated".formatted(customer.getUsername()));
+    if(customerRepository.existCustomerByUsername(updateCustomer.getUsername())) {
+      log.error("Update customer: Username %s duplicated".formatted(updateCustomer.getUsername()));
       throw new DuplicateDataException("Username %s has already been registered!"
           .formatted(customer.getUsername()));
     }
