@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -19,6 +20,7 @@ public class Config {
           .username("robin")
           .email("robert@gmail.com")
           .password("123123")
+          .registeredAt(LocalDateTime.now())
           .build();
       Customer customer1 = Customer.builder()
           .fistName("Paola")
@@ -26,6 +28,7 @@ public class Config {
           .username("paola")
           .email("paolat@outlook.com")
           .password("123123")
+          .registeredAt(LocalDateTime.now())
           .build();
       repository.saveAll(List.of(customer0, customer1));
     };

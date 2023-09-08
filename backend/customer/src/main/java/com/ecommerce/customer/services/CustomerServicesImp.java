@@ -4,11 +4,13 @@ import com.ecommerce.customer.exceptions.DuplicateDataException;
 import com.ecommerce.customer.exceptions.NotFoundException;
 import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public record CustomerServicesImp(
     CustomerRepository customerRepository
@@ -27,12 +29,14 @@ public record CustomerServicesImp(
 
   @Override
   public Customer createCustomer(Customer customer) {
-    if(customerRepository.existCustomerEmail(customer.getEmail())) {
-      throw new DuplicateDataException("Email %s already has been taken!"
+    if(customerRepository.existCustomerByEmail(customer.getEmail())) {
+      log.error("Insert customer: Email %s duplicated".formatted(customer.getEmail()));
+      throw new DuplicateDataException("Email %s has already been registered!"
           .formatted(customer.getEmail()));
     }
-    if(customerRepository.existCustomerUsername(customer.getUsername())) {
-      throw new DuplicateDataException("Username %s already has been taken!"
+    if(customerRepository.existCustomerByUsername(customer.getUsername())) {
+      log.error("Insert customer: Username %s duplicated".formatted(customer.getUsername()));
+      throw new DuplicateDataException("Username %s has already been registered!"
           .formatted(customer.getUsername()));
     }
     return customerRepository.save(customer);

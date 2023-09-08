@@ -2,7 +2,9 @@ package com.ecommerce.customer.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static jakarta.persistence.GenerationType.AUTO;
@@ -33,4 +35,6 @@ public class Customer {
   private String email;
   @Column(nullable = false)
   private String password;
+  @DateTimeFormat
+  private LocalDateTime registeredAt;
 }
