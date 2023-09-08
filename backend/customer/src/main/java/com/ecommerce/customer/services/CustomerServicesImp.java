@@ -18,12 +18,22 @@ public record CustomerServicesImp(
 
   @Override
   public Customer getCustomer(UUID uuid) {
-    return null;
+    return customerRepository.findById(uuid)
+        .orElseThrow(() -> new RuntimeException("Customer %s not found!"
+            .formatted(uuid)));
   }
 
   @Override
   public Customer createCustomer(Customer customer) {
-    return null;
+    if(customerRepository.existCustomerEmail(customer.getEmail())) {
+      throw new RuntimeException("Email %s already has been taken!"
+          .formatted(customer.getEmail()));
+    }
+    if(customerRepository.existCustomerUsername(customer.getUsername())) {
+      throw new RuntimeException("Username %s already has been taken!"
+          .formatted(customer.getUsername()));
+    }
+    return customerRepository.save(customer);
   }
 
   @Override
