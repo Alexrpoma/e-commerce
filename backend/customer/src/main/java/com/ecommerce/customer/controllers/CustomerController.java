@@ -26,4 +26,13 @@ public record CustomerController(CustomerService service) {
         .status(HttpStatus.CREATED)
         .body(service.createCustomer(customer));
   }
+  @PutMapping("/{uuid}")
+  public ResponseEntity<Customer> update(@PathVariable UUID uuid, @RequestBody Customer customer) {
+    return ResponseEntity.ok(service.updateCustomer(uuid, customer));
+  }
+  @DeleteMapping("/{uuid}")
+  public ResponseEntity<Void> delete(@PathVariable UUID uuid) {
+    service.deleteCustomer(uuid);
+    return ResponseEntity.ok().build();
+  }
 }

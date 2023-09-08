@@ -36,5 +36,6 @@ public class Customer {
   @Column(nullable = false)
   private String password;
   @DateTimeFormat
+  @Column(updatable = false)
   private LocalDateTime registeredAt;
 }

@@ -39,6 +39,20 @@ public class ApiExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
   }
 
+  @ExceptionHandler(RequestValidationException.class)
+  public ResponseEntity<ApiError> handler(
+      RequestValidationException validationException,
+      HttpServletRequest request
+  ) {
+    ApiError apiError = ApiError.builder()
+        .path(request.getRequestURI())
+        .message(validationException.getMessage())
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .localDateTime(getLocalTime())
+        .build();
+    return ResponseEntity.badRequest().body(apiError);
+  }
+
   private String getLocalTime() {
     return LocalDateTime
         .now()
