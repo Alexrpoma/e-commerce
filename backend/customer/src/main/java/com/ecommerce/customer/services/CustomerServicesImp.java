@@ -1,5 +1,7 @@
 package com.ecommerce.customer.services;
 
+import com.ecommerce.customer.exceptions.DuplicateDataException;
+import com.ecommerce.customer.exceptions.NotFoundException;
 import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -19,18 +21,18 @@ public record CustomerServicesImp(
   @Override
   public Customer getCustomer(UUID uuid) {
     return customerRepository.findById(uuid)
-        .orElseThrow(() -> new RuntimeException("Customer %s not found!"
+        .orElseThrow(() -> new NotFoundException("Customer %s not found!"
             .formatted(uuid)));
   }
 
   @Override
   public Customer createCustomer(Customer customer) {
     if(customerRepository.existCustomerEmail(customer.getEmail())) {
-      throw new RuntimeException("Email %s already has been taken!"
+      throw new DuplicateDataException("Email %s already has been taken!"
           .formatted(customer.getEmail()));
     }
     if(customerRepository.existCustomerUsername(customer.getUsername())) {
-      throw new RuntimeException("Username %s already has been taken!"
+      throw new DuplicateDataException("Username %s already has been taken!"
           .formatted(customer.getUsername()));
     }
     return customerRepository.save(customer);

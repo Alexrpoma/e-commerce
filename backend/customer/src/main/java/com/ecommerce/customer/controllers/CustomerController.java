@@ -17,7 +17,7 @@ public record CustomerController(CustomerService service) {
     return ResponseEntity.ok(service.allCustomers());
   }
   @GetMapping("/{uuid}")
-  public ResponseEntity<Customer> get(UUID uuid) {
+  public ResponseEntity<Customer> get(@PathVariable UUID uuid) {
     return ResponseEntity.ok(service.getCustomer(uuid));
   }
   @PostMapping
