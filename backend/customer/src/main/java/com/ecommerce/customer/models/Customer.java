@@ -26,7 +26,7 @@ public class Customer {
   @GeneratedValue(strategy = AUTO)
   private UUID uuid;
   @Column(nullable = false)
-  private String fistName;
+  private String firstName;
   @Column(nullable = false)
   private String lastName;
   @Column(nullable = false)
