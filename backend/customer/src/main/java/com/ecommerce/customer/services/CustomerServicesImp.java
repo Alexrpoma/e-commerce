@@ -61,8 +61,8 @@ public record CustomerServicesImp(
       throw new DuplicateDataException("Username %s has already been registered!"
           .formatted(customer.getUsername()));
     }
-    if(updateCustomer.getFistName() != null && !updateCustomer.getFistName().equals(customer.getFistName())) {
-      customer.setFistName(updateCustomer.getFistName());
+    if(updateCustomer.getFirstName() != null && !updateCustomer.getFirstName().equals(customer.getFirstName())) {
+      customer.setFirstName(updateCustomer.getFirstName());
       isUpdated = true;
     }
     if(updateCustomer.getLastName() != null && !updateCustomer.getLastName().equals(customer.getLastName())) {
