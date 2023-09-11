@@ -15,7 +15,7 @@ public class Config {
   CommandLineRunner commandLineRunner(CustomerRepository repository) {
     return args -> {
       Customer customer0 = Customer.builder()
-          .fistName("Robert")
+          .firstName("Robert")
           .lastName("Garden")
           .username("robin")
           .email("robert@gmail.com")
@@ -23,7 +23,7 @@ public class Config {
           .registeredAt(LocalDateTime.now())
           .build();
       Customer customer1 = Customer.builder()
-          .fistName("Paola")
+          .firstName("Paola")
           .lastName("Montes")
           .username("paola")
           .email("paolat@outlook.com")
