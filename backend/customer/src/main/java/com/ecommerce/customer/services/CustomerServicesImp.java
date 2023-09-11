@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ecommerce.customer.utils.constants.CustomerConstants.Service.*;
+
 @Slf4j
 @Service
 public record CustomerServicesImp(
@@ -25,20 +27,20 @@ public record CustomerServicesImp(
   @Override
   public Customer getCustomer(UUID uuid) {
     return customerRepository.findById(uuid)
-        .orElseThrow(() -> new NotFoundException("Customer %s not found!"
+        .orElseThrow(() -> new NotFoundException(CUSTOMER_NOT_FOUND
             .formatted(uuid)));
   }
 
   @Override
   public Customer createCustomer(Customer customer) {
     if(customerRepository.existCustomerByEmail(customer.getEmail())) {
-      log.error("Insert customer: Email %s duplicated".formatted(customer.getEmail()));
-      throw new DuplicateDataException("Email %s has already been registered!"
+      log.error(LOG_ERROR_INSERT_DUPLICATED_EMAIL.formatted(customer.getEmail()));
+      throw new DuplicateDataException(CUSTOMER_EMAIL_ALREADY_EXIST
           .formatted(customer.getEmail()));
     }
     if(customerRepository.existCustomerByUsername(customer.getUsername())) {
-      log.error("Insert customer: Username %s duplicated".formatted(customer.getUsername()));
-      throw new DuplicateDataException("Username %s has already been registered!"
+      log.error(LOG_ERROR_INSERT_DUPLICATED_USERNAME.formatted(customer.getUsername()));
+      throw new DuplicateDataException(CUSTOMER_USERNAME_ALREADY_EXIST
           .formatted(customer.getUsername()));
     }
     customer.setRegisteredAt(LocalDateTime.now());
@@ -49,23 +51,25 @@ public record CustomerServicesImp(
   public Customer updateCustomer(UUID uuid, Customer updateCustomer) {
     boolean isUpdated = false;
     Customer customer = customerRepository.findById(uuid)
-        .orElseThrow(() -> new NotFoundException("Customer %s not found!"
+        .orElseThrow(() -> new NotFoundException(CUSTOMER_NOT_FOUND
             .formatted(uuid)));
     if(customerRepository.existCustomerByEmail(updateCustomer.getEmail())) {
-      log.error("Update customer: Email %s duplicated".formatted(updateCustomer.getEmail()));
-      throw new DuplicateDataException("Email %s has already been registered!"
+      log.error(LOG_ERROR_UPDATE_DUPLICATED_EMAIL.formatted(updateCustomer.getEmail()));
+      throw new DuplicateDataException(CUSTOMER_EMAIL_ALREADY_EXIST
           .formatted(customer.getEmail()));
     }
     if(customerRepository.existCustomerByUsername(updateCustomer.getUsername())) {
-      log.error("Update customer: Username %s duplicated".formatted(updateCustomer.getUsername()));
-      throw new DuplicateDataException("Username %s has already been registered!"
+      log.error(LOG_ERROR_UPDATE_DUPLICATED_USERNAME.formatted(updateCustomer.getUsername()));
+      throw new DuplicateDataException(CUSTOMER_USERNAME_ALREADY_EXIST
           .formatted(customer.getUsername()));
     }
-    if(updateCustomer.getFirstName() != null && !updateCustomer.getFirstName().equals(customer.getFirstName())) {
+    if(updateCustomer.getFirstName() != null
+        && !updateCustomer.getFirstName().equals(customer.getFirstName())) {
       customer.setFirstName(updateCustomer.getFirstName());
       isUpdated = true;
     }
-    if(updateCustomer.getLastName() != null && !updateCustomer.getLastName().equals(customer.getLastName())) {
+    if(updateCustomer.getLastName() != null
+        && !updateCustomer.getLastName().equals(customer.getLastName())) {
       customer.setLastName(updateCustomer.getLastName());
       isUpdated = true;
     }
@@ -78,7 +82,7 @@ public record CustomerServicesImp(
       isUpdated = true;
     }
     if(!isUpdated) {
-      throw new RequestValidationException("No data changes found");
+      throw new RequestValidationException(NO_DATA_CHANGES_FOUND);
     }
     return customerRepository.save(customer);
   }
@@ -86,7 +90,7 @@ public record CustomerServicesImp(
   @Override
   public void deleteCustomer(UUID uuid) {
     customerRepository.findById(uuid)
-        .orElseThrow(() -> new NotFoundException("Customer %s not found!"
+        .orElseThrow(() -> new NotFoundException(CUSTOMER_NOT_FOUND
             .formatted(uuid)));
     customerRepository.deleteById(uuid);
   }
