@@ -53,6 +53,20 @@ public class ApiExceptionHandler {
     return ResponseEntity.badRequest().body(apiError);
   }
 
+  @ExceptionHandler(NullFieldException.class)
+  public ResponseEntity<ApiError> handler(
+      NullFieldException nullFieldException,
+      HttpServletRequest request
+  ) {
+    ApiError apiError = ApiError.builder()
+        .path(request.getRequestURI())
+        .message(nullFieldException.getMessage())
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .localDateTime(getLocalTime())
+        .build();
+    return ResponseEntity.badRequest().body(apiError);
+  }
+
   private String getLocalTime() {
     return LocalDateTime
         .now()

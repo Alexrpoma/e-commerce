@@ -2,6 +2,7 @@ package com.ecommerce.customer.services;
 
 import com.ecommerce.customer.exceptions.DuplicateDataException;
 import com.ecommerce.customer.exceptions.NotFoundException;
+import com.ecommerce.customer.exceptions.NullFieldException;
 import com.ecommerce.customer.exceptions.RequestValidationException;
 import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
@@ -31,7 +32,8 @@ public record CustomerServicesImp(
 
   @Override
   public Customer createCustomer(Customer customer) {
-    duplicateEmailUsernameValidator(customer);
+    notNullFieldsValidator(customer);
+    duplicateEmailUsernameValidator(customer, false);
     customer.setRegisteredAt(LocalDateTime.now());
     return customerRepository.save(customer);
   }
@@ -40,7 +42,7 @@ public record CustomerServicesImp(
   public Customer updateCustomer(UUID uuid, Customer updateCustomer) {
     boolean isUpdated = false;
     Customer customer = findCustomerByID(uuid);
-    duplicateEmailUsernameValidator(updateCustomer);
+    duplicateEmailUsernameValidator(updateCustomer, true);
     if(updateCustomer.getFirstName() != null
         && !updateCustomer.getFirstName().equals(customer.getFirstName())) {
       customer.setFirstName(updateCustomer.getFirstName());
@@ -71,14 +73,16 @@ public record CustomerServicesImp(
     customerRepository.deleteById(uuid);
   }
 
-  private void duplicateEmailUsernameValidator(Customer customer) {
+  private void duplicateEmailUsernameValidator(Customer customer, boolean isAnUpdate) {
     if(customerRepository.existCustomerByEmail(customer.getEmail())) {
-      log.error(LOG_ERROR_INSERT_DUPLICATED_EMAIL.formatted(customer.getEmail()));
+      if (isAnUpdate) log.error(LOG_ERROR_UPDATE_DUPLICATED_EMAIL.formatted(customer.getEmail()));
+      else log.error(LOG_ERROR_INSERT_DUPLICATED_EMAIL.formatted(customer.getEmail()));
       throw new DuplicateDataException(CUSTOMER_EMAIL_ALREADY_EXIST
           .formatted(customer.getEmail()));
     }
     if(customerRepository.existCustomerByUsername(customer.getUsername())) {
-      log.error(LOG_ERROR_INSERT_DUPLICATED_USERNAME.formatted(customer.getUsername()));
+      if (isAnUpdate) log.error(LOG_ERROR_UPDATE_DUPLICATED_USERNAME.formatted(customer.getUsername()));
+      else log.error(LOG_ERROR_INSERT_DUPLICATED_USERNAME.formatted(customer.getUsername()));
       throw new DuplicateDataException(CUSTOMER_USERNAME_ALREADY_EXIST
           .formatted(customer.getUsername()));
     }
@@ -88,5 +92,23 @@ public record CustomerServicesImp(
     return customerRepository.findById(uuid)
         .orElseThrow(() -> new NotFoundException(CUSTOMER_NOT_FOUND
             .formatted(uuid)));
+  }
+
+  private void notNullFieldsValidator(Customer customer) {
+    if (customer.getFirstName() == null) {
+      throw new NullFieldException("firstname");
+    }
+    if (customer.getLastName() == null) {
+      throw new NullFieldException("lastname");
+    }
+    if (customer.getUsername() == null) {
+      throw new NullFieldException("username");
+    }
+    if (customer.getEmail() == null) {
+      throw new NullFieldException("email");
+    }
+    if (customer.getPassword() == null) {
+      throw new NullFieldException("password");
+    }
   }
 }
