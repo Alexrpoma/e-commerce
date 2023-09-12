@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  dataBase:
+  postgresDB:
     container_name: postgresql
     image: postgres:15.4-alpine3.18
     environment:
@@ -14,6 +14,17 @@ services:
     networks:
       - ecommerce-network
     restart: unless-stopped
-
+  mysqlDB:
+    container_name: mysql
+    image: mysql:8.0.34-oracle
+    environment:
+      MYSQL_ROOT_PASSWORD: adm_mysql
+      MYSQL_DATABASE: fraud
+      PGDATA: /data/mysql
+    ports:
+      - "8050:3306"
+    networks:
+      - ecommerce-network
+    restart: always
 networks:
   ecommerce-network:
