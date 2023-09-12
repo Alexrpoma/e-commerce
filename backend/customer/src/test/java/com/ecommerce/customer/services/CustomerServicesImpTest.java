@@ -4,7 +4,6 @@ import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -29,6 +28,7 @@ class CustomerServicesImpTest {
 
   private Customer getCustomer() {
     return Customer.builder()
+        .uuid(UUID.randomUUID())
         .firstName("John")
         .lastName("Doe")
         .username("jonny")
@@ -89,28 +89,26 @@ class CustomerServicesImpTest {
 
   @Test
   void itShouldUpdateCustomer() {
-    Customer customer = getCustomer();
+    //given
+    Customer existingCustomer = getCustomer();
+    UUID uuid = existingCustomer.getUuid();
+    Customer updateCustomer = getCustomer();
+    updateCustomer.setFirstName("Anna");
+    updateCustomer.setLastName("Garden");
+    updateCustomer.setUsername("anna");
+    updateCustomer.setEmail("anna@gmail.com");
+    //when
+    when(repository.findById(uuid)).thenReturn(Optional.of(existingCustomer));
+    when(repository.existCustomerByEmail(any(String.class))).thenReturn(false);
+    when(repository.existCustomerByUsername(any(String.class))).thenReturn(false);
+    when(repository.save(existingCustomer)).thenReturn(updateCustomer);
 
-    when(repository.findById(customer.getUuid())).thenReturn(Optional.of(customer));
-    when(repository.existCustomerByEmail(any())).thenReturn(false);
-    when(repository.existCustomerByUsername(any())).thenReturn(false);
-    when(repository.save(any())).thenReturn(customer);
-
-    customer.setFirstName("Anna");
-    customer.setLastName("Garden");
-    customer.setUsername("anna");
-    customer.setEmail("anna@gmail.com");
-
-    Customer expect = customerServiceUnderTest.updateCustomer(customer.getUuid(), customer);
     ArgumentCaptor<Customer> customerArgCaptor = ArgumentCaptor.forClass(Customer.class);
+    Customer expect = customerServiceUnderTest.updateCustomer(uuid, updateCustomer);
 
     verify(repository, times(1)).save(customerArgCaptor.capture());
-    assertThat(customerArgCaptor.getValue()).isEqualTo(customer);
-    assertNotNull(expect);
-    assertNotEquals(getCustomer().getFirstName(), expect.getFirstName());
-    assertNotEquals(getCustomer().getLastName(), expect.getLastName());
-    assertNotEquals(getCustomer().getUsername(), expect.getUsername());
-    assertNotEquals(getCustomer().getEmail(), expect.getEmail());
+    assertEquals(customerArgCaptor.getValue(), existingCustomer);
+    assertEquals(updateCustomer, expect);
   }
 
   @Test
