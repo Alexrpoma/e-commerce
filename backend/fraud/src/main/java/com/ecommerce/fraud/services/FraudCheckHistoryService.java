@@ -8,7 +8,7 @@ import java.util.UUID;
 public interface FraudCheckHistoryService {
   List<FraudCheckHistory> fraudChecklist();
   FraudCheckHistory getFraudCheck(UUID uuid);
-  FraudCheckHistory getFraudCheckerByCustomerId(UUID customerUuid);
-  FraudCheckHistory insertFraudCheckHistory(FraudCheckHistory fraudCheckHistory);
+  FraudCheckHistory getFraudCheckerByCustomerId(UUID customerId);
+  FraudCheckHistory insertFraudCheckRecord(UUID customerId);
   FraudCheckHistory updateFraudChecker(UUID uuid, FraudCheckHistory fraudCheckHistory);
 }
