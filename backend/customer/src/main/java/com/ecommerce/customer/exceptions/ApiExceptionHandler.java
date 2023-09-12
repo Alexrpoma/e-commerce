@@ -67,6 +67,20 @@ public class ApiExceptionHandler {
     return ResponseEntity.badRequest().body(apiError);
   }
 
+  @ExceptionHandler(UUIDInvalidException.class)
+  public ResponseEntity<ApiError> handler(
+      UUIDInvalidException uuidInvalidException,
+      HttpServletRequest request
+  ) {
+    ApiError apiError = ApiError.builder()
+        .path(request.getRequestURI())
+        .message(uuidInvalidException.getMessage())
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .localDateTime(getLocalTime())
+        .build();
+    return ResponseEntity.badRequest().body(apiError);
+  }
+
   private String getLocalTime() {
     return LocalDateTime
         .now()
