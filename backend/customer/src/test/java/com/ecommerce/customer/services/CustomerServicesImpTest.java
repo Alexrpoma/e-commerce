@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -13,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -78,14 +79,38 @@ class CustomerServicesImpTest {
     when(repository.save(customer)).thenReturn(customer);
     //then
     Customer expect = customerServiceUnderTest.createCustomer(customer);
-    verify(repository, times(1)).save(customer);
+    ArgumentCaptor<Customer> customerArgCaptor = ArgumentCaptor.forClass(Customer.class);
+
+    verify(repository, times(1)).save(customerArgCaptor.capture());
+    assertThat(customerArgCaptor.getValue()).isEqualTo(customer);
     assertNotNull(expect);
     assertEquals(LocalDateTime.class, expect.getRegisteredAt().getClass());
   }
 
   @Test
-  @Disabled
-  void updateCustomer() {
+  void itShouldUpdateCustomer() {
+    Customer customer = getCustomer();
+
+    when(repository.findById(customer.getUuid())).thenReturn(Optional.of(customer));
+    when(repository.existCustomerByEmail(any())).thenReturn(false);
+    when(repository.existCustomerByUsername(any())).thenReturn(false);
+    when(repository.save(any())).thenReturn(customer);
+
+    customer.setFirstName("Anna");
+    customer.setLastName("Garden");
+    customer.setUsername("anna");
+    customer.setEmail("anna@gmail.com");
+
+    Customer expect = customerServiceUnderTest.updateCustomer(customer.getUuid(), customer);
+    ArgumentCaptor<Customer> customerArgCaptor = ArgumentCaptor.forClass(Customer.class);
+
+    verify(repository, times(1)).save(customerArgCaptor.capture());
+    assertThat(customerArgCaptor.getValue()).isEqualTo(customer);
+    assertNotNull(expect);
+    assertNotEquals(getCustomer().getFirstName(), expect.getFirstName());
+    assertNotEquals(getCustomer().getLastName(), expect.getLastName());
+    assertNotEquals(getCustomer().getUsername(), expect.getUsername());
+    assertNotEquals(getCustomer().getEmail(), expect.getEmail());
   }
 
   @Test
