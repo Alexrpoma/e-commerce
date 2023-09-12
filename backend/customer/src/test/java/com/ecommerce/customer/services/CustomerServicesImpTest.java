@@ -69,7 +69,7 @@ class CustomerServicesImpTest {
   }
 
   @Test
-  void createCustomer() {
+  void itShouldCreateCustomer() {
     //given
     Customer customer = getCustomer();
     //when
@@ -89,7 +89,11 @@ class CustomerServicesImpTest {
   }
 
   @Test
-  @Disabled
-  void deleteCustomer() {
+  void itShouldDeleteCustomer() {
+    UUID uuid = UUID.randomUUID();
+    Customer customer = new Customer();
+    when(repository.findById(uuid)).thenReturn(Optional.of(customer));
+    customerServiceUnderTest.deleteCustomer(uuid);
+    verify(repository, times(1)).deleteById(uuid);
   }
 }
