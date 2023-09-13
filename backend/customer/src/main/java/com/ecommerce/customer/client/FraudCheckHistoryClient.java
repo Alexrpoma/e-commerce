@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.UUID;
 
-@FeignClient(name = "fraud", url = "http://localhost:9050/api/v1/froud-check")
+@FeignClient(name = "fraud", url = "http://localhost:9050/api/v1/fraud-check")
 public interface FraudCheckHistoryClient {
 
-  @PostMapping("/{customerId")
-  FraudCheckHistory fraudCheckHistory(@PathVariable UUID customerId);
+  @PostMapping("/{customerId}")
+  FraudCheckHistory createFraudCheckRecord(@PathVariable("customerId") UUID customerId);
 }

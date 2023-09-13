@@ -1,11 +1,13 @@
 package com.ecommerce.customer.services;
 
+import com.ecommerce.customer.client.FraudCheckHistoryClient;
 import com.ecommerce.customer.exceptions.DuplicateDataException;
 import com.ecommerce.customer.exceptions.NotFoundException;
 import com.ecommerce.customer.exceptions.NullFieldException;
 import com.ecommerce.customer.exceptions.RequestValidationException;
 import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,11 @@ import static com.ecommerce.customer.utils.constants.CustomerConstants.Service.*
 
 @Slf4j
 @Service
-public record CustomerServicesImp(
-    CustomerRepository customerRepository
-) implements CustomerService {
+@RequiredArgsConstructor
+public class CustomerServicesImp implements CustomerService {
+
+  private final CustomerRepository customerRepository;
+  private final FraudCheckHistoryClient fraudCheckHistoryClient;
   @Override
   public List<Customer> allCustomers() {
     return customerRepository.findAll();
@@ -35,7 +39,9 @@ public record CustomerServicesImp(
     notNullFieldsValidator(customer);
     duplicateEmailUsernameValidator(customer, false);
     customer.setRegisteredAt(LocalDateTime.now());
-    return customerRepository.save(customer);
+    Customer createdCustomer = customerRepository.saveAndFlush(customer);
+    fraudCheckHistoryClient.createFraudCheckRecord(customer.getUuid());
+    return createdCustomer;
   }
 
   @Override

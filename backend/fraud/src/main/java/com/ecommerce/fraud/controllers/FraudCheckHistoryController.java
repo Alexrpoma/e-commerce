@@ -28,6 +28,8 @@ public class FraudCheckHistoryController {
 
   @PostMapping("/{customerId}")
   public ResponseEntity<FraudCheckHistory> create(@PathVariable UUID customerId) {
+    System.out.println("POST:");
+    System.out.println("Fraud check: " + customerId);
     return ResponseEntity.ok(service.insertFraudCheckRecord(customerId));
   }
 }

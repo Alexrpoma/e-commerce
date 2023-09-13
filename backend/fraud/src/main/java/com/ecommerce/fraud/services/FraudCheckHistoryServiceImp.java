@@ -35,11 +35,11 @@ public class FraudCheckHistoryServiceImp implements FraudCheckHistoryService{
 
   @Override
   public FraudCheckHistory insertFraudCheckRecord(UUID customerId) {
-    return FraudCheckHistory.builder()
+    return repository.save(FraudCheckHistory.builder()
         .customer_uuid(customerId)
         .isFraudster(false)
         .createdAt(LocalDateTime.now())
-        .build();
+        .build());
   }
 
   @Override
