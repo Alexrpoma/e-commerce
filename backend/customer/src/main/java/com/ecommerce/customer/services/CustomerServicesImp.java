@@ -7,6 +7,8 @@ import com.ecommerce.customer.exceptions.NullFieldException;
 import com.ecommerce.customer.exceptions.RequestValidationException;
 import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
+import com.ecommerce.customer.utils.dtos.CustomerDTO;
+import com.ecommerce.customer.utils.dtos.CustomerDTOMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,28 +26,30 @@ public class CustomerServicesImp implements CustomerService {
 
   private final CustomerRepository customerRepository;
   private final FraudCheckHistoryClient fraudCheckHistoryClient;
+  private final CustomerDTOMapper customerDTOMapper;
   @Override
-  public List<Customer> allCustomers() {
-    return customerRepository.findAll();
+  public List<CustomerDTO> allCustomers() {
+    return customerRepository.findAll()
+        .stream().map(customerDTOMapper).toList();
   }
 
   @Override
-  public Customer getCustomer(UUID uuid) {
-    return findCustomerByID(uuid);
+  public CustomerDTO getCustomer(UUID uuid) {
+    return customerDTOMapper.apply(findCustomerByID(uuid));
   }
 
   @Override
-  public Customer createCustomer(Customer customer) {
+  public CustomerDTO createCustomer(Customer customer) {
     notNullFieldsValidator(customer);
     duplicateEmailUsernameValidator(customer, false);
     customer.setRegisteredAt(LocalDateTime.now());
     Customer createdCustomer = customerRepository.saveAndFlush(customer);
     fraudCheckHistoryClient.createFraudCheckRecord(customer.getUuid());
-    return createdCustomer;
+    return customerDTOMapper.apply(createdCustomer);
   }
 
   @Override
-  public Customer updateCustomer(UUID uuid, Customer updateCustomer) {
+  public CustomerDTO updateCustomer(UUID uuid, Customer updateCustomer) {
     boolean isUpdated = false;
     Customer customer = findCustomerByID(uuid);
     duplicateEmailUsernameValidator(updateCustomer, true);
@@ -70,7 +74,7 @@ public class CustomerServicesImp implements CustomerService {
     if(!isUpdated) {
       throw new RequestValidationException(NO_DATA_CHANGES_FOUND);
     }
-    return customerRepository.save(customer);
+    return customerDTOMapper.apply(customerRepository.save(customer));
   }
 
   @Override
