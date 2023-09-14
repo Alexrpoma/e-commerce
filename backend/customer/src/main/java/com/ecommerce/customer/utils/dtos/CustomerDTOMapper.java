@@ -1,9 +1,11 @@
 package com.ecommerce.customer.utils.dtos;
 
 import com.ecommerce.customer.models.Customer;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+@Component
 public class CustomerDTOMapper implements Function<Customer, CustomerDTO> {
 
   @Override
