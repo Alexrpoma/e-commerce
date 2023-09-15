@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface FraudCheckHistoryClient {
 
   @PostMapping("/{customerId}")
-  FraudCheckHistory createFraudCheckRecord(@PathVariable("customerId") UUID customerId);
+  void createFraudCheckRecord(@PathVariable("customerId") UUID customerId);
 }
