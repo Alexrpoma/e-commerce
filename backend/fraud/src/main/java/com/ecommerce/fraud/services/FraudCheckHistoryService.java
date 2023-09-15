@@ -10,5 +10,6 @@ public interface FraudCheckHistoryService {
   FraudCheckHistory getFraudCheck(UUID uuid);
   FraudCheckHistory getFraudCheckerByCustomerId(UUID customerId);
   FraudCheckHistory insertFraudCheckRecord(UUID customerId);
+  void deleteFraudCheckRecordByCustomerId(UUID customerId);
   FraudCheckHistory updateFraudChecker(UUID uuid, FraudCheckHistory fraudCheckHistory);
 }

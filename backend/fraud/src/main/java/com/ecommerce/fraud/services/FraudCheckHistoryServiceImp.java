@@ -43,6 +43,14 @@ public class FraudCheckHistoryServiceImp implements FraudCheckHistoryService{
   }
 
   @Override
+  public void deleteFraudCheckRecordByCustomerId(UUID customerId) {
+    if(!repository.existFraudCheckRecordByCustomerId(customerId)) {
+      throw new RuntimeException("The customer %s doesn't exist.".formatted(customerId));
+    }
+    repository.deleteFraudCheckRecordByCustomerId(customerId);
+  }
+
+  @Override
   public FraudCheckHistory updateFraudChecker(UUID uuid, FraudCheckHistory fraudCheckHistory) {
     return null;
   }
