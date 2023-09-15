@@ -15,5 +15,10 @@ spring:
       ddl-auto: create-drop
     show-sql: true
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka
+
 server:
   port: 9000
