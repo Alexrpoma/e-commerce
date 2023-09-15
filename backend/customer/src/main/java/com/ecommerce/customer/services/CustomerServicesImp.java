@@ -80,6 +80,7 @@ public record CustomerServicesImp(
   @Override
   public void deleteCustomer(UUID uuid) {
     findCustomerByID(uuid);
+    fraudCheckHistoryClient.deleteFraudCheckRecord(uuid);
     customerRepository.deleteById(uuid);
   }
 

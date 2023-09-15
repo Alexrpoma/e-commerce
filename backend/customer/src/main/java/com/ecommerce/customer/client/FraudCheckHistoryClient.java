@@ -1,6 +1,7 @@
 package com.ecommerce.customer.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -11,4 +12,7 @@ public interface FraudCheckHistoryClient {
 
   @PostMapping("/{customerId}")
   void createFraudCheckRecord(@PathVariable("customerId") UUID customerId);
+
+  @DeleteMapping("/{customerId}")
+  void deleteFraudCheckRecord(@PathVariable("customerId") UUID customerId);
 }

@@ -32,4 +32,10 @@ public class FraudCheckHistoryController {
     System.out.println("Fraud check: " + customerId);
     return ResponseEntity.ok(service.insertFraudCheckRecord(customerId));
   }
+
+  @DeleteMapping("/{customerId}")
+  public ResponseEntity<Void> deleteByCustomerId(@PathVariable("customerId") UUID customerId) {
+    service.deleteFraudCheckRecordByCustomerId(customerId);
+    return ResponseEntity.ok().build();
+  }
 }
