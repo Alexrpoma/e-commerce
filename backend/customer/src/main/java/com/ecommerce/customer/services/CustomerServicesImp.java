@@ -9,7 +9,6 @@ import com.ecommerce.customer.models.Customer;
 import com.ecommerce.customer.repositories.CustomerRepository;
 import com.ecommerce.customer.utils.dtos.CustomerDTO;
 import com.ecommerce.customer.utils.dtos.CustomerDTOMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +20,13 @@ import static com.ecommerce.customer.utils.constants.CustomerConstants.Service.*
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-public class CustomerServicesImp implements CustomerService {
+public record CustomerServicesImp(
+    CustomerRepository customerRepository,
+    FraudCheckHistoryClient fraudCheckHistoryClient,
+    CustomerDTOMapper customerDTOMapper
 
-  private final CustomerRepository customerRepository;
-  private final FraudCheckHistoryClient fraudCheckHistoryClient;
-  private final CustomerDTOMapper customerDTOMapper;
+) implements CustomerService {
+
   @Override
   public List<CustomerDTO> allCustomers() {
     return customerRepository.findAll()
