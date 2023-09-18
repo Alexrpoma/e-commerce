@@ -7,12 +7,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.UUID;
 
-@FeignClient(name = "fraud", url = "http://localhost:9050/api/v1/fraud-check")
+import static com.ecommerce.customer.utils.constants.Path.API_FRAUD_CHECK_CUSTOMER_ID;
+import static com.ecommerce.customer.utils.constants.Path.CUSTOMER_ID;
+
+@FeignClient(name = "fraud")
 public interface FraudCheckHistoryClient {
 
-  @PostMapping("/{customerId}")
-  void createFraudCheckRecord(@PathVariable("customerId") UUID customerId);
+  @PostMapping(API_FRAUD_CHECK_CUSTOMER_ID)
+  void createFraudCheckRecord(@PathVariable(CUSTOMER_ID) UUID customerId);
 
-  @DeleteMapping("/{customerId}")
-  void deleteFraudCheckRecord(@PathVariable("customerId") UUID customerId);
+  @DeleteMapping(API_FRAUD_CHECK_CUSTOMER_ID)
+  void deleteFraudCheckRecord(@PathVariable(CUSTOMER_ID) UUID customerId);
 }
