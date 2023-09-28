@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -82,15 +83,15 @@ class CustomerServicesImpTest {
     //when
     when(repository.existCustomerByEmail(any())).thenReturn(false);
     when(repository.existCustomerByUsername(any())).thenReturn(false);
-    when(repository.save(customer)).thenReturn(customer);
+    when(repository.saveAndFlush(customer)).thenReturn(customer);
     //then
     CustomerDTO expect = customerServiceUnderTest.createCustomer(customer);
     ArgumentCaptor<Customer> customerArgCaptor = ArgumentCaptor.forClass(Customer.class);
 
-    verify(repository, times(1)).save(customerArgCaptor.capture());
+    verify(repository, times(1)).saveAndFlush(customerArgCaptor.capture());
     assertThat(customerArgCaptor.getValue()).isEqualTo(customer);
     assertNotNull(expect);
-    //assertEquals(LocalDateTime.class, expect.getRegisteredAt().getClass());
+    assertEquals(expect.lastName(), customer.getLastName());
   }
 
   @Test
