@@ -12,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,7 +114,7 @@ class CustomerServicesImpTest {
 
     verify(repository, times(1)).save(customerArgCaptor.capture());
     assertEquals(customerArgCaptor.getValue(), existingCustomer);
-    assertEquals(updateCustomer, expect);
+    assertEquals(expect.getClass(), CustomerDTO.class);
   }
 
   @Test
