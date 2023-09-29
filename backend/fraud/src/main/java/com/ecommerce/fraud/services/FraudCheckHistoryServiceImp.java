@@ -1,5 +1,6 @@
 package com.ecommerce.fraud.services;
 
+import com.ecommerce.fraud.exceptions.NotFoundException;
 import com.ecommerce.fraud.models.FraudCheckHistory;
 import com.ecommerce.fraud.repositories.FraudCheckHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +24,17 @@ public class FraudCheckHistoryServiceImp implements FraudCheckHistoryService{
   @Override
   public FraudCheckHistory getFraudCheck(UUID uuid) {
     return repository.findById(uuid)
-        .orElseThrow(() -> new RuntimeException("%s fraud check history not found"
+        .orElseThrow(() -> new NotFoundException("%s fraud check history not found"
             .formatted(uuid)));
   }
 
   @Override
   public FraudCheckHistory getFraudCheckerByCustomerId(UUID customerId) {
     return repository.fraudCheckHistoryByCustomerId(customerId)
-        .orElseThrow(() -> new RuntimeException("fraud check history not found by customer id"));
+        .orElseThrow(
+            () -> new NotFoundException(
+                "fraud check history by customer id %s not found".formatted(customerId)
+            ));
   }
 
   @Override
@@ -45,7 +49,7 @@ public class FraudCheckHistoryServiceImp implements FraudCheckHistoryService{
   @Override
   public void deleteFraudCheckRecordByCustomerId(UUID customerId) {
     if(!repository.existFraudCheckRecordByCustomerId(customerId)) {
-      throw new RuntimeException("The customer %s doesn't exist.".formatted(customerId));
+      throw new NotFoundException("The customer %s doesn't exist.".formatted(customerId));
     }
     repository.deleteFraudCheckRecordByCustomerId(customerId);
   }
