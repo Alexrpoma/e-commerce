@@ -1,10 +1,10 @@
 package com.ecommerce.fraud.services;
 
+import com.ecommerce.fraud.exceptions.NotFoundException;
 import com.ecommerce.fraud.models.FraudCheckHistory;
 import com.ecommerce.fraud.repositories.FraudCheckHistoryRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -76,6 +77,18 @@ class FraudCheckHistoryServiceImpTest {
   }
 
   @Test
+  void itShouldThrowNotFoundException() {
+    UUID uuid = UUID.randomUUID();
+    assertThatThrownBy(() -> serviceImpTest.getFraudCheck(uuid))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessageContaining("%s fraud check history not found"
+            .formatted(uuid));
+    assertThatThrownBy(() -> serviceImpTest.getFraudCheckerByCustomerId(uuid))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessageContaining("fraud check history by customer id %s not found".formatted(uuid));
+  }
+
+  @Test
   void insertFraudCheckRecord() {
     FraudCheckHistory fraudCheckHistory = getFraudCheckHistory();
     when(repository.save(any())).thenReturn(fraudCheckHistory);
@@ -87,12 +100,11 @@ class FraudCheckHistoryServiceImpTest {
   }
 
   @Test
-  @Disabled
   void deleteFraudCheckRecordByCustomerId() {
+    when(repository.existFraudCheckRecordByCustomerId(any())).thenReturn(true);
+    serviceImpTest.deleteFraudCheckRecordByCustomerId(UUID.randomUUID());
+    ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+    verify(repository).deleteFraudCheckRecordByCustomerId(uuidArgumentCaptor.capture());
   }
 
-  @Test
-  @Disabled
-  void updateFraudChecker() {
-  }
 }
