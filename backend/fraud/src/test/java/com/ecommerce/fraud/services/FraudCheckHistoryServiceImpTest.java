@@ -76,8 +76,14 @@ class FraudCheckHistoryServiceImpTest {
   }
 
   @Test
-  @Disabled
   void insertFraudCheckRecord() {
+    FraudCheckHistory fraudCheckHistory = getFraudCheckHistory();
+    when(repository.save(any())).thenReturn(fraudCheckHistory);
+    ArgumentCaptor<FraudCheckHistory> fraudCheckHistoryArgumentCaptor =
+        ArgumentCaptor.forClass(FraudCheckHistory.class);
+    var expected = serviceImpTest.insertFraudCheckRecord(fraudCheckHistory.getCustomer_uuid());
+    verify(repository).save(fraudCheckHistoryArgumentCaptor.capture());
+    assertThat(expected.getClass()).isEqualTo(fraudCheckHistoryArgumentCaptor.getValue().getClass());
   }
 
   @Test
