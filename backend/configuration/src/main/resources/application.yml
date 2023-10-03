@@ -1,0 +1,8 @@
+server:
+  port: 9060
+
+spring:
+  application:
+    name: configuration-service
+  profiles:
+    active: native
