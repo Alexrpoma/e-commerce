@@ -2,7 +2,7 @@ spring:
   application:
     name: customer
   datasource:
-    url: jdbc:postgresql://localhost:8000/customer
+    url: jdbc:postgresql://${postgres.hostname}:${postgres.port}/customer
     driver-class-name: org.postgresql.Driver
     username: admin
     password: adm_psql
@@ -22,3 +22,7 @@ eureka:
 
 server:
   port: 9000
+
+postgres:
+  hostname: localhost
+  port: 8000
